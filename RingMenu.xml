@@ -1,0 +1,30 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+<Script File="RingMenu.lua"/>
+    <Frame name="RingMenuFrame" parent="UIParent">
+        <Size><AbsDimension x="300" y="300" /></Size>
+        <Anchors>
+            <Anchor point="CENTER" relativePoint="CENTER" />
+        </Anchors>
+        <Layers>
+            <Layer level="BACKGROUND">
+                <Texture name="RingMenuTextureShadow" file="Interface\AddOns\RingMenu\RingMenuBackdrop">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" />
+                        <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnLoad>
+                RingMenuFrame_OnLoad()
+            </OnLoad>
+            <OnEvent>
+                RingMenuFrame_OnEvent(event)
+            </OnEvent>
+            <OnUpdate>
+                RingMenuFrame_OnUpdate(arg1)
+            </OnUpdate>
+        </Scripts>
+    </Frame>
+</Ui>

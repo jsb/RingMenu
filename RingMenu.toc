@@ -1,0 +1,9 @@
+## Interface: 11200
+## Title: Ring Menu
+## Author: jsb
+## Version: 0.1
+## SavedVariablesPerCharacter: RingMenu_settings
+RingMenuSettingsTemplates.xml
+RingMenuSettings.lua
+RingMenu.lua
+RingMenu.xml
