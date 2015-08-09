@@ -14,13 +14,13 @@ function CreateSettingsFrame(config)
     frame:EnableMouse(true)
 
     -- Title
-    titleTexture = frame:CreateTexture(config.name .. "TitleTexture", "ARTWORK")
+    local titleTexture = frame:CreateTexture(config.name .. "TitleTexture", "ARTWORK")
     titleTexture:SetTexture("Interface/DialogFrame/UI-DialogBox-Header")
     titleTexture:SetWidth(280)
     titleTexture:SetHeight(64)
     titleTexture:SetPoint("TOP", frame, "TOP", 0, 12)
 
-    titleText = frame:CreateFontString(config.name .. "TitleText", "ARTWORK", "GameFontNormal")
+    local titleText = frame:CreateFontString(config.name .. "TitleText", "ARTWORK", "GameFontNormal")
     titleText:SetText(config.title)
     titleText:SetPoint("TOP", titleTexture, "TOP", 0, -14)
 
@@ -51,9 +51,9 @@ function CreateSettingsFrame(config)
                 lowLabel = lowLabel .. row.labelSuffix
                 highLabel = highLabel .. row.labelSuffix
             end
-            getglobal(widget:GetName().."Low"):SetText(lowLabel);
-            getglobal(widget:GetName().."High"):SetText(highLabel);
-            widget:SetScript("OnValueChanged", row.updateFunc);
+            getglobal(widget:GetName().."Low"):SetText(lowLabel)
+            getglobal(widget:GetName().."High"):SetText(highLabel)
+            widget:SetScript("OnValueChanged", row.updateFunc)
         end
         if row.widget == "color" then
             local widget = CreateFrame("Button", config.name .. "Widget" .. row.name, frame, "SettingsColorSwatchTemplate")
@@ -68,7 +68,7 @@ function CreateSettingsFrame(config)
             widget:SetAutoFocus(false)
             widget:SetNumeric(true)
             widget:SetMaxLetters(3)
-            widget:SetScript("OnTextChanged", row.updateFunc);
+            widget:SetScript("OnTextChanged", row.updateFunc)
         end
     end
     
