@@ -1,5 +1,5 @@
 <Bindings>
-	<Binding name="Open / Close RingMenu" header="RingMenu">
+	<Binding name="RINGMENU_TOGGLE" header="RINGMENU">
 		RingMenu_Toggle()
 	</Binding>
 </Bindings>

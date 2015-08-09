@@ -7,3 +7,4 @@ RingMenuSettingsTemplates.xml
 RingMenuSettings.lua
 RingMenu.lua
 RingMenu.xml
+Strings.lua
