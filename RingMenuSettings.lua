@@ -23,6 +23,15 @@ function CreateSettingsFrame(config)
     local titleText = frame:CreateFontString(config.name .. "TitleText", "ARTWORK", "GameFontNormal")
     titleText:SetText(config.title)
     titleText:SetPoint("TOP", titleTexture, "TOP", 0, -14)
+    
+    local titleHandle = CreateFrame("Button", config.name .. "TitleHandle", frame)
+    titleHandle:SetWidth(280 - 2 * 64)
+    titleHandle:SetHeight(64 - 2 * 14)
+    titleHandle:SetPoint("TOP", frame, "TOP", 0, 12)
+    titleHandle:EnableMouse(true)
+    titleHandle:RegisterForClicks("LeftButtonDown", "LeftButtonUp")
+    titleHandle:SetScript("OnMouseDown", RingMenuSettings_StartDragging)
+    titleHandle:SetScript("OnMouseUp", RingMenuSettings_StopDragging)
 
     -- Rows
     local framePadding = 24.0
@@ -96,6 +105,18 @@ function CreateSettingsFrame(config)
     frame:SetHeight(currentY + 14)
     frame:SetScript("OnShow", config.showFunc)
     return frame
+end
+
+function RingMenuSettings_StartDragging()
+    if arg1 == "LeftButton" then
+        RingMenuSettingsFrame:StartMoving()
+    end
+end
+
+function RingMenuSettings_StopDragging()
+    if arg1 == "LeftButton" then
+        RingMenuSettingsFrame:StopMovingOrSizing()
+    end
 end
 
 function SettingsColorSwatch_OpenColorPicker(button)
