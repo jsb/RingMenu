@@ -132,7 +132,7 @@ function RingMenuSettings_SetupSettingsFrame()
         showFunc = RingMenuSettings_OnShow,
         rows = {
             { name = "NumButtons", text = "Number of Buttons", widget = "slider", min = 1, max = 24, valueStep = 1, updateFunc = RingMenuSettings_NumButtons_OnUpdate },
-            { name = "FirstButtonIndex", text = "First Button Index", widget = "number", updateFunc = RingMenuSettings_FirstButtonIndex_OnUpdate },
+            { name = "FirstButtonIndex", text = "First Button Slot", widget = "number", updateFunc = RingMenuSettings_FirstButtonIndex_OnUpdate },
             { name = "BackgroundColor", text = "Background Color", widget = "color", updateFunc = RingMenuSettings_BackgroundColor_OnUpdate },
             { name = "Radius", text = "Radius", widget = "slider", min = 0, max = 200, labelSuffix = " px", valueStep = 1, updateFunc = RingMenuSettings_Radius_OnUpdate },
             { name = "Angle", text = "Angle", widget = "slider", min = 0, max = 360, labelSuffix = "°", valueStep = 1, updateFunc = RingMenuSettings_Angle_OnUpdate },

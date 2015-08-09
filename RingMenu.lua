@@ -1,6 +1,6 @@
 -- Default Settings
 RingMenu_defaultSettings = {
-    startPageID = 84,
+    startPageID = 13,
     numButtons = 12,
     radius = 100.0,
     angleOffset = 0.0,
@@ -46,7 +46,7 @@ end
 local ActionButton_GetPagedID_Old
 function RingMenuButton_GetPagedID(button)
 	if button.isRingMenu then
-		return RingMenu_settings.startPageID + button:GetID()
+		return RingMenu_settings.startPageID + button:GetID() - 1
 	else
         return ActionButton_GetPagedID_Old(button)
     end
