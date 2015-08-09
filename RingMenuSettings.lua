@@ -39,7 +39,7 @@ function CreateSettingsFrame(config)
         
         if row.widget == "slider" then
             local widget = CreateFrame("Slider", config.name .. "Widget" .. row.name, frame, "OptionsSliderTemplate")
-            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 120, -currentY + 25)
+            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 120, -currentY + 27)
             widget:SetWidth(154)
             widget:SetHeight(17)
             widget:SetMinMaxValues(row.min, row.max)
@@ -57,12 +57,12 @@ function CreateSettingsFrame(config)
         end
         if row.widget == "color" then
             local widget = CreateFrame("Button", config.name .. "Widget" .. row.name, frame, "SettingsColorSwatchTemplate")
-            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 120, -currentY + 23)
+            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 120, -currentY + 25)
             widget.updateFunc = row.updateFunc;
         end
         if row.widget == "number" then
             local widget = CreateFrame("EditBox", config.name .. "Widget" .. row.name, frame, "InputBoxTemplate")
-            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 124, -currentY + 25)
+            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 124, -currentY + 27)
             widget:SetWidth(40)
             widget:SetHeight(20)
             widget:SetAutoFocus(false)
