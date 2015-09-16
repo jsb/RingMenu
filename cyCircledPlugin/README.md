@@ -2,6 +2,10 @@
 
 The cyCircled AddOn allows to customize the appearance of action buttons of numerous third-party AddOns. In order to enable cyCircled skinning for RingMenu, you need to install a plugin file, which is provided here.
 
+![SprocketBlack](http://i.imgur.com/M4ognuj.png)
+![Glossy](http://i.imgur.com/V8zzUaK.png)
+![Serenity](http://i.imgur.com/zF62uAr.png)
+
 ## Plugin Installation
 
 1. Copy the **RingMenu.lua** file provided in this folder (WoW/Interface/AddOns/RingMenu/cyCircledPlugin) into the **plugins** subfolder of the cyCircled AddOn (e.g., WoW/Interface/AddOns/cyCircled/plugins)
