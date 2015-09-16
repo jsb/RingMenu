@@ -4,8 +4,8 @@ The cyCircled AddOn allows to customize the appearance of action buttons of nume
 
 ## Plugin Installation
 
-1. Copy the **RingMenu.lua** file provided in this folder into the **plugins** subfolder of the cyCircled AddOn (e.g., WoW/Interface/AddOns/cyCircled/plugins)
-2. Open the **cyCircled.toc** file (found in WoW/Interface/AddOns/cyCircled/cyCircled.toc) with a text editor (e.g. Notepad, TextEdit). Near the bottom, you'll see a list of lines looking like
+1. Copy the **RingMenu.lua** file provided in this folder (WoW/Interface/AddOns/RingMenu/cyCircledPlugin) into the **plugins** subfolder of the cyCircled AddOn (e.g., WoW/Interface/AddOns/cyCircled/plugins)
+2. Open the **cyCircled.toc** file (located at WoW/Interface/AddOns/cyCircled/cyCircled.toc) with a text editor (e.g. Notepad, TextEdit). Near the bottom, you'll see a list of lines looking like
         
         plugins\XXX.lua
         
