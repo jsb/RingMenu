@@ -10,20 +10,29 @@ RingMenu_defaultSettings = {
     colorR = 0.0,
     colorG = 0.0,
     colorB = 0.0,
-    colorAlpha = 0.5
+    colorAlpha = 0.5,
+    autoClose = true,
 }
 
-function RingMenu_CopyTable(source)
-    -- A shallow copy suffices, for now
-    local copy = {}
-    for k, v in pairs(source) do
-        copy[k] = v
+function RingMenu_ResetDefaultSettings()
+    RingMenu_settings = {}
+    for k, v in pairs(RingMenu_defaultSettings) do
+        RingMenu_settings[k] = v
     end
-    return copy
+end
+
+function RingMenu_LoadNewDefaultSettings()
+    -- Only updates fields that are not present in the current settings dictionary.
+    -- Used for initializing new settings with sensible initial values after a version update.
+    for k, v in pairs(RingMenu_defaultSettings) do
+        if RingMenu_settings[k] == nil then
+            RingMenu_settings[k] = v
+        end
+    end
 end
 
 -- Settings (saved variables)
-RingMenu_settings = RingMenu_CopyTable(RingMenu_defaultSettings)
+RingMenu_settings = {}
 
 -- Runtime variables
 RingMenu_currentSize = 0.0
@@ -53,14 +62,11 @@ function RingMenuButton_GetPagedID(button)
 end
 
 function RingMenuButton_OnClick()
-    -- Auto-close the ring menu when the user has clicked an action
-
+    this:oldScriptOnClick()
     if IsShiftKeyDown() or CursorHasSpell() or CursorHasItem() then
         -- User is just changing button slots, keep RingMenu open
-        this:oldScriptOnClick()
-    else
+    elseif RingMenu_settings.autoClose then
         -- Clicked a button, close RingMenu
-        this:oldScriptOnClick()
         RingMenu_Close()
     end
 end
@@ -76,15 +82,17 @@ end
 -- RingMenuFrame callbacks
 
 function RingMenuFrame_OnLoad()
-    this:RegisterEvent("VARIABLES_LOADED")
-    RingMenu_Close()
-    
+    RingMenu_ResetDefaultSettings()
     RingMenuSettings_SetupSettingsFrame()
+    RingMenu_Close()
+    this:RegisterEvent("VARIABLES_LOADED")
 end
 
 function RingMenuFrame_OnEvent(event)
     if event == "VARIABLES_LOADED" then
+        RingMenu_LoadNewDefaultSettings()
         RingMenuFrame_ConfigureButtons()
+
         -- Hook global button callbacks
         ActionButton_GetPagedID_Old = ActionButton_GetPagedID
         ActionButton_GetPagedID = RingMenuButton_GetPagedID
@@ -232,8 +240,4 @@ function RingMenu_Open()
     end
     RingMenu_isOpen = true
     RingMenuFrame:Show()
-end
-
-function RingMenu_ResetDefaultSettings()
-    RingMenu_settings = RingMenu_CopyTable(RingMenu_defaultSettings)
 end

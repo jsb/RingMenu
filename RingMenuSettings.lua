@@ -1,6 +1,7 @@
 function CreateSettingsFrame(config)
     local frame = CreateFrame("Frame", config.name, UIParent)
-    frame:SetWidth(320)
+    local frameWidth = 360.0
+    frame:SetWidth(frameWidth)
     frame:SetHeight(240)
     frame:SetPoint("CENTER", UIParent, "CENTER")
     frame:SetBackdrop({
@@ -36,20 +37,26 @@ function CreateSettingsFrame(config)
     -- Rows
     local framePadding = 24.0
     local rowPadding = 16.0
-    local currentX = framePadding
+    local rowWidth = frameWidth - 2 * framePadding
+    local columnPadding = 16.0
+    local labelColumnX = framePadding
+    local labelColumnWidth = 120.0
+    local widgetColumnX = labelColumnX + labelColumnWidth + columnPadding
+    local widgetColumnWidth = rowWidth - labelColumnWidth - columnPadding
     local currentY = framePadding + 18
+    
     for i, row in ipairs(config.rows) do
         local label = frame:CreateFontString(config.name .. "Label" .. row.name, "ARTWORK", "GameFontNormal")
         label:SetText(row.text)
-        label:SetPoint("LEFT", frame, "TOPLEFT", currentX, -currentY)
+        label:SetPoint("LEFT", frame, "TOPLEFT", labelColumnX, -currentY)
         currentY = currentY + label:GetHeight() + rowPadding
-        label:SetWidth(240)
+        label:SetWidth(rowWidth)
         label:SetJustifyH("LEFT")
         
         if row.widget == "slider" then
             local widget = CreateFrame("Slider", config.name .. "Widget" .. row.name, frame, "OptionsSliderTemplate")
-            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 120, -currentY + 27)
-            widget:SetWidth(154)
+            widget:SetPoint("LEFT", frame, "TOPLEFT", widgetColumnX, -currentY + 27)
+            widget:SetWidth(widgetColumnWidth)
             widget:SetHeight(17)
             widget:SetMinMaxValues(row.min, row.max)
             widget:SetValue(50)
@@ -64,14 +71,19 @@ function CreateSettingsFrame(config)
             getglobal(widget:GetName().."High"):SetText(highLabel)
             widget:SetScript("OnValueChanged", row.updateFunc)
         end
+        if row.widget == "checkbutton" then
+            local widget = CreateFrame("CheckButton", config.name .. "Widget" .. row.name, frame, "OptionsCheckButtonTemplate")
+            widget:SetPoint("LEFT", frame, "TOPLEFT", widgetColumnX - 4, -currentY + 25)
+            widget:SetScript("OnClick", row.updateFunc)
+        end
         if row.widget == "color" then
             local widget = CreateFrame("Button", config.name .. "Widget" .. row.name, frame, "SettingsColorSwatchTemplate")
-            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 120, -currentY + 25)
-            widget.updateFunc = row.updateFunc;
+            widget:SetPoint("LEFT", frame, "TOPLEFT", widgetColumnX, -currentY + 25)
+            widget.updateFunc = row.updateFunc
         end
         if row.widget == "number" then
             local widget = CreateFrame("EditBox", config.name .. "Widget" .. row.name, frame, "InputBoxTemplate")
-            widget:SetPoint("LEFT", frame, "TOPLEFT", currentX + 124, -currentY + 27)
+            widget:SetPoint("LEFT", frame, "TOPLEFT", widgetColumnX + 4, -currentY + 27)
             widget:SetWidth(40)
             widget:SetHeight(20)
             widget:SetAutoFocus(false)
@@ -83,9 +95,8 @@ function CreateSettingsFrame(config)
     
     -- Buttons
     local numButtons = table.getn(config.buttons)
-    local buttonRowWidth = frame:GetWidth() - 2 * framePadding
     local buttonPadding = 8
-    local buttonWidth = (buttonRowWidth - (numButtons - 1) * buttonPadding) / numButtons
+    local buttonWidth = (rowWidth - (numButtons - 1) * buttonPadding) / numButtons
     local buttonHeight = 18
     
     currentY = currentY + 0.5 * rowPadding
@@ -93,7 +104,7 @@ function CreateSettingsFrame(config)
     for i, buttonConf in ipairs(config.buttons) do
         local button = CreateFrame("Button", config.name .. "Button" .. buttonConf.name, frame, "UIPanelButtonTemplate")
         local xOffset = (i - 1) * (buttonWidth + buttonPadding)
-        button:SetPoint("LEFT", frame, "TOPLEFT", currentX + xOffset, -currentY)
+        button:SetPoint("LEFT", frame, "TOPLEFT", framePadding + xOffset, -currentY)
         button:SetWidth(buttonWidth)
         button:SetHeight(buttonHeight)
         button:SetText(buttonConf.text)
@@ -146,12 +157,21 @@ function SettingsColorSwatch_OpenColorPicker(button)
     ShowUIPanel(ColorPickerFrame)
 end
 
+function RingMenuSettings_CopyTable(source)
+    local result = {}
+    for k, v in pairs(source) do
+        result[k] = v
+    end
+    return result
+end
+
 function RingMenuSettings_SetupSettingsFrame()
     local settingsFrameConfig = {
         name = "RingMenuSettingsFrame",
         title = "RingMenu Settings",
         showFunc = RingMenuSettings_OnShow,
         rows = {
+            { name = "AutoClose", text = "Auto-close on click", widget = "checkbutton", updateFunc = RingMenuSettings_AutoClose_OnUpdate },
             { name = "NumButtons", text = "Number of Buttons", widget = "slider", min = 1, max = 24, valueStep = 1, updateFunc = RingMenuSettings_NumButtons_OnUpdate },
             { name = "FirstButtonIndex", text = "First Button Slot", widget = "number", updateFunc = RingMenuSettings_FirstButtonIndex_OnUpdate },
             { name = "BackgroundColor", text = "Background Color", widget = "color", updateFunc = RingMenuSettings_BackgroundColor_OnUpdate },
@@ -173,11 +193,12 @@ end
 RingMenuSettings_previousSettings = {}
 function RingMenuSettings_OnShow()
     PlaySound("GAMEDIALOGOPEN", "master")
-    RingMenuSettings_previousSettings = RingMenu_CopyTable(RingMenu_settings)
+    RingMenuSettings_previousSettings = RingMenuSettings_CopyTable(RingMenu_settings)
     RingMenuSettings_UpdateAllWidgets()
 end
 
 function RingMenuSettings_UpdateAllWidgets()
+    getglobal("RingMenuSettingsFrameWidgetAutoClose"):SetChecked(RingMenu_settings.autoClose)
     getglobal("RingMenuSettingsFrameWidgetNumButtons"):SetValue(RingMenu_settings.numButtons)
     getglobal("RingMenuSettingsFrameWidgetFirstButtonIndex"):SetText(RingMenu_settings.startPageID)
     local colorSwatch = getglobal("RingMenuSettingsFrameWidgetBackgroundColorNormalTexture")
@@ -197,6 +218,11 @@ function RingMenuSettings_UpdateSliderLabels()
     getglobal("RingMenuSettingsFrameWidgetRadiusText"):SetText(radiusRounded .. " px")
 end
 
+function RingMenuSettings_AutoClose_OnUpdate()
+    local checkButton = getglobal("RingMenuSettingsFrameWidgetAutoClose")
+    RingMenu_settings.autoClose = checkButton:GetChecked()
+end
+
 function RingMenuSettings_NumButtons_OnUpdate()
     local slider = getglobal("RingMenuSettingsFrameWidgetNumButtons")
     RingMenu_settings.numButtons = math.floor(slider:GetValue())
@@ -206,7 +232,7 @@ end
 
 function RingMenuSettings_FirstButtonIndex_OnUpdate()
     local editBox = getglobal("RingMenuSettingsFrameWidgetFirstButtonIndex")
-    local buttonIndex = tonumber(editBox:GetText()) or 84
+    local buttonIndex = tonumber(editBox:GetText())
     RingMenu_settings.startPageID = buttonIndex
     RingMenuFrame_ConfigureButtons()
 end
@@ -244,7 +270,7 @@ end
 
 function RingMenuSettings_CloseCancel()
     PlaySound("GAMEDIALOGCLOSE", "master")
-    RingMenu_settings = RingMenu_CopyTable(RingMenuSettings_previousSettings)
+    RingMenu_settings = RingMenuSettings_CopyTable(RingMenuSettings_previousSettings)
     RingMenuFrame_ConfigureButtons()
     RingMenuSettingsFrame:Hide()
 end
