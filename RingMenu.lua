@@ -12,6 +12,7 @@ RingMenu_defaultSettings = {
     colorB = 0.0,
     colorAlpha = 0.5,
     autoClose = true,
+    zoomButtonIcons = false,
 }
 
 function RingMenu_ResetDefaultSettings()
@@ -83,7 +84,6 @@ end
 
 function RingMenuFrame_OnLoad()
     RingMenu_ResetDefaultSettings()
-    RingMenuSettings_SetupSettingsFrame()
     RingMenu_Close()
     this:RegisterEvent("VARIABLES_LOADED")
 end
@@ -92,6 +92,7 @@ function RingMenuFrame_OnEvent(event)
     if event == "VARIABLES_LOADED" then
         RingMenu_LoadNewDefaultSettings()
         RingMenuFrame_ConfigureButtons()
+        RingMenuSettings_SetupSettingsFrame()
 
         -- Hook global button callbacks
         ActionButton_GetPagedID_Old = ActionButton_GetPagedID
@@ -130,6 +131,13 @@ function RingMenuFrame_ConfigureButtons()
         button.isRingMenu = true
         button.isBonus = true
         button.buttonType = "RING_MENU"
+
+        local icon = getglobal(buttonName .. "Icon")
+        if cyCircled_RingMenu and RingMenu_settings.zoomButtonIcons then
+            icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        else
+            icon:SetTexCoord(0.0, 1.0, 0.0, 1.0)
+        end
 
         table.insert(RingMenu_usedButtons, button)
         button:Enable()

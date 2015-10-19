@@ -186,6 +186,12 @@ function RingMenuSettings_SetupSettingsFrame()
             { name = "Default", text = "Reset", func = RingMenuSettings_Reset },
         },
     }
+
+    -- Only show 'zoom buttons' options if cyCircled AddOn is present
+    if cyCircled_RingMenu then
+        table.insert(settingsFrameConfig.rows, 2, {name = "ZoomButtonIcons", text = "Enlarge icons", widget = "checkbutton", updateFunc = RingMenuSettings_ZoomButtonIcons_OnUpdate})
+    end
+
     RingMenuSettingsFrame = CreateSettingsFrame(settingsFrameConfig)
     RingMenuSettingsFrame:Hide()
 end
@@ -206,6 +212,11 @@ function RingMenuSettings_UpdateAllWidgets()
     colorSwatch:SetAlpha(RingMenu_settings.colorAlpha)
     getglobal("RingMenuSettingsFrameWidgetRadius"):SetValue(RingMenu_settings.radius)
     getglobal("RingMenuSettingsFrameWidgetAngle"):SetValue(RingMenu_settings.angleOffset)
+
+    local widgetZoomButtonIcons = RingMenuSettingsFrameWidgetZoomButtonIcons
+    if widgetZoomButtonIcons then
+        widgetZoomButtonIcons:SetChecked(RingMenu_settings.zoomButtonIcons)
+    end
     
     RingMenuSettings_UpdateSliderLabels()
 end
@@ -261,6 +272,12 @@ function RingMenuSettings_Angle_OnUpdate()
     RingMenu_settings.angleOffset = slider:GetValue()
     RingMenuSettings_UpdateSliderLabels()
     RingMenu_UpdateButtonPositions()
+end
+
+function RingMenuSettings_ZoomButtonIcons_OnUpdate()
+    local checkButton = getglobal("RingMenuSettingsFrameWidgetZoomButtonIcons")
+    RingMenu_settings.zoomButtonIcons = checkButton:GetChecked()
+    RingMenuFrame_ConfigureButtons()
 end
 
 function RingMenuSettings_CloseOkay()
