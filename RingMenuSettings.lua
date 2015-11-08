@@ -1,3 +1,7 @@
+local function toboolean(value)
+    return not not value
+end
+
 function CreateSettingsFrame(config)
     local frame = CreateFrame("Frame", config.name, UIParent)
     local frameWidth = 360.0
@@ -231,7 +235,7 @@ end
 
 function RingMenuSettings_AutoClose_OnUpdate()
     local checkButton = getglobal("RingMenuSettingsFrameWidgetAutoClose")
-    RingMenu_settings.autoClose = checkButton:GetChecked()
+    RingMenu_settings.autoClose = toboolean(checkButton:GetChecked())
 end
 
 function RingMenuSettings_NumButtons_OnUpdate()
@@ -276,7 +280,7 @@ end
 
 function RingMenuSettings_ZoomButtonIcons_OnUpdate()
     local checkButton = getglobal("RingMenuSettingsFrameWidgetZoomButtonIcons")
-    RingMenu_settings.zoomButtonIcons = checkButton:GetChecked()
+    RingMenu_settings.zoomButtonIcons = toboolean(checkButton:GetChecked())
     RingMenuFrame_ConfigureButtons()
 end
 
