@@ -19,3 +19,5 @@ Open the settings window by typing **/ringmenu**.
 Using the _First Button Slot_ and _Number of Buttons_ settings, you can adjust the range of action button slots that are used for the RingMenu. Depending on your class, some button slot ranges might be already in use for shapeshift forms. Use [this list](http://wowwiki.wikia.com/wiki/ActionSlot) to pick an appropriate range.
 
 Further configuration options include the radius and angle of the RingMenu as well as the color of the transparent backdrop.
+
+You can use the cyCircled AddOn to modify the appearance of RingMenu buttons (see the [installation instructions](cyCircledPlugin/README.md)).
