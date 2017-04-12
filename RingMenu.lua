@@ -128,6 +128,7 @@ function RingMenuFrame_ConfigureButtons()
         
         button:SetID(i)
         button:SetPoint("CENTER", RingMenuFrame, "CENTER", 0, 0)
+        button:SetFrameLevel(2)
         button.isRingMenu = true
         button.isBonus = true
         button.buttonType = "RING_MENU"
