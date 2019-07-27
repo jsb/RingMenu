@@ -213,10 +213,18 @@ function RingMenu_UpdateButtonPositions()
     RingMenuFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", RingMenu_currentX, RingMenu_currentY)
 end
 
+function RingDelay()
+    local Time=GetTime();
+        while ( Time+0.05>GetTime() ) do
+    -- sleep
+    end
+end
+
 function RingMenu_Toggle()
     if RingMenu_isOpen then
         RingMenu_Close()
     else
+	RingDelay()
         RingMenu_Open()
     end
 end
