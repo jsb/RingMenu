@@ -165,7 +165,13 @@ function RingMenuFrame_OnUpdate(elapsed)
         else
             animationSpeed = RingMenu_settings.animationSpeedClose
         end
-        local alpha = math.pow(0.001, elapsed * animationSpeed)
+	
+	local e = elapsed
+	if e > 0.02 then
+		alpha = 0.7
+	else
+		alpha = math.pow(0.001, elapsed * animationSpeed)
+	end
 
         RingMenu_currentSize = RingMenu_Lerp(RingMenu_targetSize, RingMenu_currentSize, alpha)
         RingMenu_currentX = RingMenu_Lerp(RingMenu_targetX, RingMenu_currentX, alpha)
