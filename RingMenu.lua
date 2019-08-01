@@ -256,3 +256,13 @@ function RingMenu_Open()
     RingMenu_isOpen = true
     RingMenuFrame:Show()
 end
+
+-- Center close button
+function CenterButton()
+    local button = CreateFrame("Button", nil, RingMenuFrame)
+    button:SetWidth(32)
+    button:SetHeight(32)
+    button:SetPoint("CENTER", RingMenuFrame, "CENTER")
+    button:RegisterForClicks("AnyUp")
+    button:SetScript("OnMouseUp", function(self, button) RingMenu_Close() end)
+end
