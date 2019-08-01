@@ -224,6 +224,7 @@ function RingMenu_Toggle()
         RingMenu_Close()
     else
         RingMenu_Open()
+	CenterButton()
     end
 end
 
