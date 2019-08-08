@@ -13,6 +13,12 @@
                         <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" />
                     </Anchors>
                 </Texture>
+                <Texture name="RingMenuHandle" file="Interface\AddOns\RingMenu\RingMenuHandle">
+                    <Anchors>
+                        <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" />
+                        <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" />
+                    </Anchors>
+                </Texture>
             </Layer>
         </Layers>
         <Scripts>

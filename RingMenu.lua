@@ -2,7 +2,7 @@
 RingMenu_defaultSettings = {
     startPageID = 13,
     numButtons = 12,
-    radius = 100.0,
+    radius = 120.0,
     angleOffset = 0.0,
     animationSpeedOpen = 4.0,
     animationSpeedClose = 3.0,
@@ -11,7 +11,7 @@ RingMenu_defaultSettings = {
     colorG = 0.0,
     colorB = 0.0,
     colorAlpha = 0.5,
-    autoClose = true,
+    autoClose = false,
     zoomButtonIcons = false,
 }
 
@@ -48,16 +48,16 @@ RingMenu_isOpen = false
 SLASH_RINGMENU1 = "/ringmenu";
 
 function SlashCmdList.RINGMENU(message)
-	RingMenuSettingsFrame:Show()
+    RingMenuSettingsFrame:Show()
 end
 
 -- Hooked ActionButton functions
 
 local ActionButton_GetPagedID_Old
 function RingMenuButton_GetPagedID(button)
-	if button.isRingMenu then
-		return RingMenu_settings.startPageID + button:GetID() - 1
-	else
+    if button.isRingMenu then
+        return RingMenu_settings.startPageID + button:GetID() - 1
+    else
         return ActionButton_GetPagedID_Old(button)
     end
 end
@@ -81,11 +81,13 @@ function RingMenuButton_OnEnter()
 end
 
 -- RingMenuFrame callbacks
-
+--startup
 function RingMenuFrame_OnLoad()
     RingMenu_ResetDefaultSettings()
     RingMenu_Close()
     this:RegisterEvent("VARIABLES_LOADED")
+    RingMenuFrame:RegisterForDrag("LeftButton")
+    CenterButton_OnClick()
 end
 
 function RingMenuFrame_OnEvent(event)
@@ -93,7 +95,6 @@ function RingMenuFrame_OnEvent(event)
         RingMenu_LoadNewDefaultSettings()
         RingMenuFrame_ConfigureButtons()
         RingMenuSettings_SetupSettingsFrame()
-
         -- Hook global button callbacks
         ActionButton_GetPagedID_Old = ActionButton_GetPagedID
         ActionButton_GetPagedID = RingMenuButton_GetPagedID
@@ -106,10 +107,10 @@ function RingMenuFrame_ConfigureButtons()
     for _, button in ipairs(RingMenu_usedButtons) do
         button:Hide()
         button:Disable()
-        button:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", -1000, -1000)
+        button:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", - 1000, - 1000)
     end
     RingMenu_usedButtons = {}
-    
+
     -- Create ring menu buttons
     for i = 1, RingMenu_settings.numButtons do
         local buttonName = "RingMenuButton" .. i
@@ -125,10 +126,14 @@ function RingMenuFrame_ConfigureButtons()
             button.oldScriptOnEnter = button:GetScript("OnEnter")
             button:SetScript("OnEnter", RingMenuButton_OnEnter)
         end
-        
+
         button:SetID(i)
         button:SetPoint("CENTER", RingMenuFrame, "CENTER", 0, 0)
-        button:SetFrameLevel(2)
+        --Set appropriate framelevel
+        button:SetFrameLevel(button:GetFrameLevel() + 1)
+        --Cooldown framelevel
+        local cooldown = getglobal(button:GetName().."Cooldown")
+        cooldown:SetFrameLevel(cooldown:GetFrameLevel() + 1)
         button.isRingMenu = true
         button.isBonus = true
         button.buttonType = "RING_MENU"
@@ -137,21 +142,78 @@ function RingMenuFrame_ConfigureButtons()
         if cyCircled_RingMenu and RingMenu_settings.zoomButtonIcons then
             icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
         else
-            icon:SetTexCoord(0.0, 1.0, 0.0, 1.0)
+            icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+            icon:SetAlpha(0.9)
         end
 
         table.insert(RingMenu_usedButtons, button)
         button:Enable()
         button:Show()
-        
+
         this = button
         ActionButton_Update()
     end
-    
+
     RingMenu_UpdateButtonPositions()
 end
 
+--Start point for RingMenuHandle
+local StartTime = GetTime()
+
 function RingMenuFrame_OnUpdate(elapsed)
+
+    --Center button states
+    local path = "Interface\\AddOns\\RingMenu\\icons\\"
+    CenterButton:SetPoint("CENTER", RingMenuFrame, "CENTER")
+    if IsControlKeyDown() then
+        CenterButton:SetNormalTexture(path .. "SetNorm")
+        CenterButton:SetHighlightTexture(path .. "SetHigh", 0.5)
+        CenterButton:SetPushedTexture(path .. "SetPress")
+    elseif not RingMenuSettingsFrame:IsVisible() then
+        CenterButton:SetNormalTexture(path .. "CloseNorm")
+        CenterButton:SetHighlightTexture(path .. "CloseHigh")
+        CenterButton:SetPushedTexture(path .. "ClosePress")
+    end
+
+    -- Ability to drag using Alt key after RegisterForDrag
+    if IsAltKeyDown() then
+				-- "Breathing" alpha values for RingMenuHandle (see RingMenu.xml)
+        RingMenuHandle:Show()
+        CenterButton:Hide()
+        PassedTime = GetTime() - StartTime
+        if PassedTime > 0.0 and PassedTime < 1.0 then
+            RingMenuHandle:SetAlpha(1.0 - PassedTime)
+        end
+
+        if PassedTime > 1.0 and PassedTime < 2.0 then
+            RingMenuHandle:SetAlpha(-1.0 + PassedTime)
+        end
+
+        if PassedTime > 2.0 then
+            StartTime = GetTime()
+        end
+
+        RingMenuFrame:EnableMouse(true)
+        RingMenuFrame:SetMovable(true)
+        RingMenuFrame:SetScript("OnDragStart", function()
+            RingMenuFrame:StartMoving()
+        end)
+        RingMenuFrame:SetScript("OnDragStop", function()
+            RingMenuFrame:StopMovingOrSizing()
+            RingMenu_currentX, RingMenu_currentY = RingMenuFrame:GetCenter()
+            RingMenuFrame:ClearAllPoints()
+            RingMenuFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", RingMenu_currentX, RingMenu_currentY)
+        end)
+    else
+        RingMenuHandle:Hide()
+        if RingMenu_isOpen == true then
+            CenterButton:Show()
+        end
+        RingMenuFrame:SetMovable(false)
+        RingMenuFrame:EnableMouse(false)
+    end
+
+
     if RingMenu_currentSize ~= RingMenu_targetSize then
         -- Snap to target size if within epsilon
         if math.abs(RingMenu_currentSize - RingMenu_targetSize) < 0.001 then
@@ -165,13 +227,14 @@ function RingMenuFrame_OnUpdate(elapsed)
         else
             animationSpeed = RingMenu_settings.animationSpeedClose
         end
-	
-	local e = elapsed
-	if e > 0.02 then
-		alpha = 0.7
-	else
-		alpha = math.pow(0.001, elapsed * animationSpeed)
-	end
+
+				-- Workaround peak values on 1st appearance
+        local e = elapsed
+        if e > 0.02 then
+            alpha = 0.7
+        else
+            alpha = math.pow(0.001, e * animationSpeed) + 0.05
+        end
 
         RingMenu_currentSize = RingMenu_Lerp(RingMenu_targetSize, RingMenu_currentSize, alpha)
         RingMenu_currentX = RingMenu_Lerp(RingMenu_targetX, RingMenu_currentX, alpha)
@@ -241,11 +304,11 @@ function RingMenu_Close()
     RingMenu_targetX = mouseX
     RingMenu_targetY = mouseY
     RingMenu_isOpen = false
+    CenterButton:Hide()
 end
 
 function RingMenu_Open()
     local mouseX, mouseY = RingMenu_GetMousePosition()
-    
     RingMenu_targetSize = 1.0
     RingMenu_targetX = mouseX
     RingMenu_targetY = mouseY
@@ -255,4 +318,27 @@ function RingMenu_Open()
     end
     RingMenu_isOpen = true
     RingMenuFrame:Show()
+    CenterButton:Show()
+end
+
+-- Center button, also see RingMenuFrame_OnUpdate
+CenterButton = CenterButton or
+CreateFrame("Button", nil, RingMenuFrame)
+CenterButton:SetWidth(28)
+CenterButton:SetHeight(28)
+CenterButton:SetFrameLevel(CenterButton:GetFrameLevel() + 1)
+
+function CenterButton_OnClick()
+    CenterButton:SetScript("OnClick", function()
+        if IsControlKeyDown() then
+        if RingMenuSettingsFrame:IsVisible() then
+            RingMenuSettingsFrame:Hide()
+        else
+            RingMenuSettingsFrame:Show()
+        end
+    elseif not RingMenuSettingsFrame:IsVisible() then
+        RingMenu_Close()
+    else RingMenuSettingsFrame:Hide()
+    end
+end)
 end
