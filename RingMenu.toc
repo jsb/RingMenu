@@ -1,10 +1,10 @@
-## Interface: 11200
+## Interface: 11302
 ## Title: RingMenu
 ## Author: jsb
-## Version: 1.0.2
-## SavedVariablesPerCharacter: RingMenu_settings
-RingMenuSettingsTemplates.xml
-RingMenuSettings.lua
-RingMenu.lua
-RingMenu.xml
-Strings.lua
+## Version: 2.0.0
+## SavedVariablesPerCharacter: RingMenu_globalConfig, RingMenu_ringConfig
+copy.lua
+bindings.xml
+bindings.lua
+main.lua
+options.lua
