@@ -1,5 +1,4 @@
 <Bindings>
-	<Binding name="RINGMENU_TOGGLE" header="RINGMENU">
-		RingMenu_Toggle()
-	</Binding>
+    <Binding name="CLICK RingMenuToggleRing1:LeftButton" description="Toggle RingMenu" header="RINGMENU">
+    </Binding>
 </Bindings>
