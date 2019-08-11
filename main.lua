@@ -17,13 +17,12 @@ local RingMenu_globalStateDefault = {
 local RingMenu_ringStateDefault = {
 }
 
-RingMenu_globalConfig = shallow_copy(RingMenu_globalConfigDefault)
+-- Global variables for settings and ring state.
+-- These will be updated with actual values in ADDON_LOADED.
+RingMenu_globalConfig = {}
 RingMenu_ringConfig = {}
-RingMenu_ringConfig[1] = shallow_copy(RingMenu_ringConfigDefault)
-
-RingMenu.globalState = shallow_copy(RingMenu_globalStateDefault)
+RingMenu.globalState = {}
 RingMenu.ringState = {}
-RingMenu.ringState[1] = shallow_copy(RingMenu_ringStateDefault)
 
 function RingMenu_UpdateRing(ringID)
     -- Lazy-init of the ringFrame array
@@ -113,7 +112,21 @@ RingMenu.mainFrame = CreateFrame("Frame")
 RingMenu.mainFrame.OnEvent = function (self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == RingMenu_AddonName then
         print("RingMenu ADDON_LOADED")
-        -- TODO: integrate default settings with saved settings
+        
+        -- Update empty fields in settings with default values
+        RingMenu_globalConfig = RingMenu_globalConfig or {}
+        update_with_defaults(RingMenu_globalConfig, RingMenu_globalConfigDefault)
+        for ringID = 1, RingMenu_globalConfig.numRings do
+            RingMenu_ringConfig[ringID] = RingMenu_ringConfig[ringID] or {}
+            update_with_defaults(RingMenu_ringConfig[ringID], RingMenu_ringConfigDefault)
+        end
+        
+        -- Init state
+        RingMenu.globalState = shallow_copy(RingMenu_globalStateDefault)
+        for ringID = 1, RingMenu_globalConfig.numRings do
+            RingMenu.ringState[ringID] = shallow_copy(RingMenu_ringStateDefault)
+        end
+        
         RingMenu_UpdateAllRings()
     end
 end
