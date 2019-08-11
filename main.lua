@@ -111,8 +111,6 @@ end
 RingMenu.mainFrame = CreateFrame("Frame")
 RingMenu.mainFrame.OnEvent = function (self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == RingMenu_AddonName then
-        print("RingMenu ADDON_LOADED")
-        
         -- Update empty fields in settings with default values
         RingMenu_globalConfig = RingMenu_globalConfig or {}
         update_with_defaults(RingMenu_globalConfig, RingMenu_globalConfigDefault)

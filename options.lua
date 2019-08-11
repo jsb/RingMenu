@@ -43,11 +43,12 @@ local function makeOptionsPanel(options)
     end
     
     local panel = CreateFrame("Frame", options.panelName)
+    panel.widgets = {}
     
     local labelWidth = 120
     local widgetWidth = 180
     local columnPadding = 10
-    local rowPadding = 20
+    local rowPadding = 24
     
     local function refreshText(self)
         local entry = self.optionsEntry
@@ -55,6 +56,8 @@ local function makeOptionsPanel(options)
         local settingsField = entry.settingsField
         local value = settingsTable[settingsField]
         self:SetText(value)
+        self:SetCursorPosition(0) -- Fix to scroll the text field to the left
+        self:ClearFocus()
     end
     
     local function refreshValue(self)
@@ -65,19 +68,22 @@ local function makeOptionsPanel(options)
         self:SetValue(value)
     end
     
-    local function defaultOnValueChanged(self, value, isUserInput)
-        if not isUserInput then
-            return
-        end
+    local function sliderValueChanged(self, value, isUserInput)
         local entry = self.optionsEntry
         local settingsTable = _G["RingMenu_ringConfig"][1]
         local settingsField = entry.settingsField
-        settingsTable[settingsField] = value
         
-        RingMenu_UpdateRing(1)
+        local label = _G[self:GetName() .. "Text"]
+        local suffix = entry.labelSuffix or ""
+        label:SetText(value .. suffix)
+        
+        if isUserInput then
+            settingsTable[settingsField] = value
+            RingMenu_UpdateRing(1)
+        end
     end
     
-    local function defaultOnTextChanged(self, isUserInput)
+    local function textValueChanged(self, isUserInput)
         if not isUserInput then
             return
         end
@@ -119,7 +125,8 @@ local function makeOptionsPanel(options)
             _G[widget:GetName().."Low"]:SetText(lowLabel)
             _G[widget:GetName().."High"]:SetText(highLabel)
 
-            widget:SetScript("OnValueChanged", row.updateFunc or defaultOnValueChanged)
+            widget:SetScript("OnValueChanged", row.updateFunc or sliderValueChanged)
+            widget.refreshFunc = row.refreshFunc or refreshValue
         elseif row.widgetType == "number" then
             widget = CreateFrame("EditBox", options.panelName .. "Widget" .. row.settingsField, panel, "InputBoxTemplate")
             widget:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
@@ -129,7 +136,8 @@ local function makeOptionsPanel(options)
             widget:SetNumeric(true)
             widget:SetMaxLetters(3)
             
-            widget:SetScript("OnTextChanged", row.updateFunc or defaultOnTextChanged)
+            widget:SetScript("OnTextChanged", row.updateFunc or textValueChanged)
+            widget.refreshFunc = row.refreshFunc or refreshText
         else
             print("RingMenu: Unrecognized widget type: " .. row.widgetType)
         end
@@ -138,26 +146,25 @@ local function makeOptionsPanel(options)
             if row.tooltip then
                 widget.tooltipText = row.tooltip
             end
+            table.insert(panel.widgets, widget)
         end
     end
     
     return panel
 end
 
-local oldWidgets = {
-    { name = "AutoClose", text = "Auto-close on click", widget = "checkbutton", updateFunc = RingMenuSettings_AutoClose_OnUpdate },
-    { name = "NumButtons", text = "Number of Buttons", widget = "slider", min = 1, max = 24, valueStep = 1, updateFunc = RingMenuSettings_NumButtons_OnUpdate },
-    { name = "FirstButtonIndex", text = "First Button Slot", widget = "number", updateFunc = RingMenuSettings_FirstButtonIndex_OnUpdate },
-    { name = "BackgroundColor", text = "Background Color", widget = "color", updateFunc = RingMenuSettings_BackgroundColor_OnUpdate },
-    { name = "Radius", text = "Radius", widget = "slider", min = 0, max = 300, labelSuffix = " px", valueStep = 1, updateFunc = RingMenuSettings_Radius_OnUpdate },
-    { name = "Angle", text = "Angle", widget = "slider", min = 0, max = 360, labelSuffix = "°", valueStep = 1, updateFunc = RingMenuSettings_Angle_OnUpdate },
-    { name = "Blank", text = "", widget = "none" },
-    { name = "Description", text = "|cffccccccSelect a button to show / hide the RingMenu under \"Main Menu\" > \"Key Bindings\" > \"Open / Close RingMenu\"", widget = "none" },
-}
-
 RingMenu.optionsFrame = makeOptionsPanel(options)
-
 RingMenu.optionsFrame.name = RingMenu_AddonName
+
+RingMenu.optionsFrame.refresh = function (self)
+    for _, widget in ipairs(self.widgets) do
+        local refreshFunc = widget.refreshFunc
+        if refreshFunc then
+            refreshFunc(widget)
+        end
+    end
+end
+
 --RingMenu.optionsFrame.refresh = ...
 --RingMenu.optionsFrame.okay = ...
 --RingMenu.optionsFrame.cancel = ...
