@@ -5,9 +5,10 @@ local RingMenu_globalConfigDefault = {
 }
 
 local RingMenu_ringConfigDefault = {
-    radius = 120,
-    firstSlot = 1,
+    radius = 100,
+    firstSlot = 13,
     numSlots = 12,
+    backdropScale = 1.5,
 }
 
 local RingMenu_globalStateDefault = {
@@ -36,6 +37,13 @@ function RingMenu_UpdateRing(ringID)
         local rf = RingMenu.ringFrame[ringID]
         rf.ringID = ringID
         
+        -- Backdrop texture
+        rf.backdrop = rf:CreateTexture(rf:GetName() .. "Backdrop", "BACKGROUND")
+        rf.backdrop:SetPoint("BOTTOMLEFT", rf, "BOTTOMLEFT")
+        rf.backdrop:SetPoint("TOPRIGHT", rf, "TOPRIGHT")
+        rf.backdrop:SetTexture("Interface\\AddOns\\RingMenu\\RingMenuBackdrop.tga")
+        rf.backdrop:SetVertexColor(0, 0, 0, 0.5)
+        
         -- An invisible button used as a secure handler for
         -- (a) responding to CLICK RingMenuToggleRing*:LeftButton binding events on a secure path
         -- (b) running secure event responses for the ring button OnClick event
@@ -60,7 +68,8 @@ function RingMenu_UpdateRing(ringID)
     end
     local rf = RingMenu.ringFrame[ringID]
     
-    rf:SetSize(config.radius, config.radius)
+    local frameSize = 2 * config.radius * config.backdropScale
+    rf:SetSize(frameSize, frameSize)
     
     -- Lazy-init this ringFrame's buttons
     rf.button = rf.button or {}
