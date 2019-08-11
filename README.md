@@ -9,7 +9,7 @@ The RingMenu is hence ideal for storing away action buttons that are frequently 
 
 ## Setup
 Before first use, you need to set up a button to summon / dismiss the RingMenu anywhere on the screen. Go to  
-**Main Menu** > **Key Bindings** > **RingMenu** > **Toggle RingMenu**  
+**Main Menu** > **Key Bindings** > **Other** > **RingMenu** > **Toggle RingMenu**  
 and choose an appropriate button. This can be any keyboard or mouse button (e.g. middle mouse button).
 
 Open the RingMenu by clicking the summon button anywhere on the screen. You can now drag and drop actions to the slots of the RingMenu like for a regular action bar.
