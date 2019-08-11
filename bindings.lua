@@ -1,2 +1,2 @@
 BINDING_HEADER_RINGMENU = "RingMenu"
-BINDING_NAME_RINGMENU_TOGGLE = "Toggle RingMenu"
+_G["BINDING_NAME_CLICK RingMenuToggleRing1:LeftButton"] = "Toggle RingMenu"

@@ -1,4 +1,3 @@
 <Bindings>
-    <Binding name="CLICK RingMenuToggleRing1:LeftButton" description="Toggle RingMenu" header="RINGMENU">
-    </Binding>
+    <Binding name="CLICK RingMenuToggleRing1:LeftButton" description="Toggle RingMenu" header="RINGMENU" />
 </Bindings>
