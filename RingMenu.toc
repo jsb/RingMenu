@@ -1,6 +1,7 @@
 ## Interface: 11302
 ## Title: RingMenu
 ## Author: jsb
+## Version: 2.0.0
 ## SavedVariablesPerCharacter: RingMenu_globalConfig, RingMenu_ringConfig
 copy.lua
 bindings.xml
