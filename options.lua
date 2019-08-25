@@ -1,7 +1,5 @@
 local RingMenu_AddonName, RingMenu = ...
 
-local currentRingID = 1
-
 local function getRingBindingCommand(ringID)
     local ringFrame = RingMenu.ringFrame[ringID]
     local toggleButton = ringFrame.toggleButton
@@ -51,7 +49,7 @@ end
 function RingMenuOptionsPanel_AddRing()
     local ringPanel = _G["RingMenuOptionsPanelRingConfig"]
     local ringID = RingMenu_AddRing()
-    currentRingID = ringID
+    RingMenuOptionsPanel.currentRingID = ringID
     RingMenu_UpdateAllRings()
     ringPanel.refresh()
 end
@@ -59,10 +57,10 @@ end
 function RingMenuOptionsPanel_RemoveRing()
     local ringPanel = _G["RingMenuOptionsPanelRingConfig"]
     
-    unbindAllRingBindingKeyBinds(currentRingID)
-    RingMenu_RemoveRing(currentRingID)
-    if currentRingID > RingMenu_globalConfig.numRings then
-        currentRingID = RingMenu_globalConfig.numRings
+    unbindAllRingBindingKeyBinds(RingMenuOptionsPanel.currentRingID)
+    RingMenu_RemoveRing(RingMenuOptionsPanel.currentRingID)
+    if RingMenuOptionsPanel.currentRingID > RingMenu_globalConfig.numRings then
+        RingMenuOptionsPanel.currentRingID = RingMenu_globalConfig.numRings
     end
     
     restoreAllSavedKeyBinds()
@@ -119,8 +117,10 @@ function RingMenuOptions_SetupPanel()
     
     -- Setup the drop down menu
     
+    panel.currentRingID = 1
+    
     function ringDropdown.Clicked(self, ringID, arg2, checked)
-        currentRingID = ringID
+        RingMenuOptionsPanel.currentRingID = ringID
         ringPanel.refresh()
     end
     
@@ -129,7 +129,7 @@ function RingMenuOptions_SetupPanel()
             local info = UIDropDownMenu_CreateInfo()
             info.text = getRingDropdownText(ringID)
             info.value = ringID
-            info.checked = (ringID == currentRingID)
+            info.checked = (ringID == RingMenuOptionsPanel.currentRingID)
             info.func = ringDropdown.Clicked
             info.arg1 = ringID
             UIDropDownMenu_AddButton(info)
@@ -138,7 +138,7 @@ function RingMenuOptions_SetupPanel()
     UIDropDownMenu_Initialize(ringDropdown, ringDropdown.Menu)
     UIDropDownMenu_SetWidth(ringDropdown, 200)
     UIDropDownMenu_JustifyText(ringDropdown, "LEFT")
-    UIDropDownMenu_SetText(ringDropdown, getRingDropdownText(currentRingID))
+    UIDropDownMenu_SetText(ringDropdown, getRingDropdownText(RingMenuOptionsPanel.currentRingID))
     
     -- Setup the per-ring configuration panel
     
@@ -160,7 +160,7 @@ function RingMenuOptions_SetupPanel()
     local function refreshWidget(widget)
         local widgetFrame = widget.widgetFrame
         if widgetFrame then
-            local settingsTable = RingMenu_ringConfig[currentRingID]
+            local settingsTable = RingMenu_ringConfig[RingMenuOptionsPanel.currentRingID]
             local settingsField = widget.name
             local value = settingsTable[settingsField]
             if widget.widgetType == "slider" then
@@ -174,7 +174,7 @@ function RingMenuOptions_SetupPanel()
                 widgetFrame:SetCursorPosition(0) -- Fix to scroll the text field to the left
                 widgetFrame:ClearFocus()
             elseif widget.widgetType == "keyBind" then
-                widgetFrame:SetText(getRingBindingKeyBindsText(currentRingID))
+                widgetFrame:SetText(getRingBindingKeyBindsText(RingMenuOptionsPanel.currentRingID))
             elseif widget.widgetType == "color" then
                 local texture = widgetFrame.texture
                 texture:SetVertexColor(value.r, value.g, value.b, value.a)
@@ -186,13 +186,13 @@ function RingMenuOptions_SetupPanel()
     
     -- This is the method that actually updates the settings field in the RingMenu_ringConfig table
     local function widgetChanged(widget, value)
-        local settingsTable = RingMenu_ringConfig[currentRingID]
+        local settingsTable = RingMenu_ringConfig[RingMenuOptionsPanel.currentRingID]
         local settingsField = widget.name
         settingsTable[settingsField] = value
-        RingMenu_UpdateRing(currentRingID)
+        RingMenu_UpdateRing(RingMenuOptionsPanel.currentRingID)
         
         -- Some config panel changes that should take immediate effect
-        UIDropDownMenu_SetText(ringDropdown, getRingDropdownText(currentRingID))
+        UIDropDownMenu_SetText(ringDropdown, getRingDropdownText(RingMenuOptionsPanel.currentRingID))
     end
     
     local function sliderOnValueChanged(self, value, isUserInput)
@@ -229,7 +229,7 @@ function RingMenuOptions_SetupPanel()
     local function keyBindOnBindingCompleted(self, completedSuccessfully, keys)
         if completedSuccessfully then
             if keys then
-                unbindAllRingBindingKeyBinds(currentRingID)
+                unbindAllRingBindingKeyBinds(RingMenuOptionsPanel.currentRingID)
             
                 -- Workaround: Sanitize modifier key names
                 local metaKeyMap = {
@@ -245,19 +245,19 @@ function RingMenuOptions_SetupPanel()
                 end
                 
                 local keyBind = CreateKeyChordStringFromTable(keys)
-                local command = getRingBindingCommand(currentRingID)
+                local command = getRingBindingCommand(RingMenuOptionsPanel.currentRingID)
                 SetBinding(keyBind, command)
                 SaveBindings(GetCurrentBindingSet())
                 
                 widgetChanged(self.widget, keyBind)
             end
         end
-        self:SetText(getRingBindingKeyBindsText(currentRingID))
+        self:SetText(getRingBindingKeyBindsText(RingMenuOptionsPanel.currentRingID))
     end
     
     local function colorOnClick(self)
         local widget = self.widget
-        local settingsTable = RingMenu_ringConfig[currentRingID]
+        local settingsTable = RingMenu_ringConfig[RingMenuOptionsPanel.currentRingID]
         local settingsField = widget.name
         local color = settingsTable[settingsField]
         
@@ -371,7 +371,7 @@ function RingMenuOptions_SetupPanel()
     end
     
     function ringPanel.refresh()
-        UIDropDownMenu_SetText(ringDropdown, getRingDropdownText(currentRingID))
+        UIDropDownMenu_SetText(ringDropdown, getRingDropdownText(RingMenuOptionsPanel.currentRingID))
         for _, widget in ipairs(RingMenu.ringConfigWidgets) do
             refreshWidget(widget)
         end

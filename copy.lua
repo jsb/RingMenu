@@ -1,5 +1,7 @@
+local RingMenu_AddonName, RingMenu = ...
+
 -- Shallow-copy a table
-function shallow_copy(t)
+function RingMenu.shallow_copy(t)
     local copy = {}
     for k, v in pairs(t) do
         copy[k] = v
@@ -8,11 +10,11 @@ function shallow_copy(t)
 end
 
 -- Deep-copy a table
-function deep_copy(t)
+function RingMenu.deep_copy(t)
     local copy = {}
     if type(t) == 'table' then
         for k, v in pairs(t) do
-            copy[deep_copy(k)] = deep_copy(v)
+            copy[RingMenu.deep_copy(k)] = RingMenu.deep_copy(v)
         end
     else
         copy = t
@@ -21,10 +23,10 @@ function deep_copy(t)
 end
 
 -- Copies fields from defaults to t but only if they are currently nil in t
-function update_with_defaults(t, defaults)
+function RingMenu.update_with_defaults(t, defaults)
     for k, v in pairs(defaults) do
         if t[k] == nil then
-            t[k] = deep_copy(v)
+            t[k] = RingMenu.deep_copy(v)
         end
     end
 end

@@ -37,8 +37,8 @@ RingMenu.ringState = {}
 function RingMenu_AddRing()
     RingMenu_globalConfig.numRings = RingMenu_globalConfig.numRings + 1
     local ringID = RingMenu_globalConfig.numRings
-    RingMenu_ringConfig[ringID] = deep_copy(RingMenu_ringConfigDefault)
-    RingMenu.ringState = deep_copy(RingMenu_ringStateDefault)
+    RingMenu_ringConfig[ringID] = RingMenu.deep_copy(RingMenu_ringConfigDefault)
+    RingMenu.ringState = RingMenu.deep_copy(RingMenu_ringStateDefault)
     RingMenu_UpdateAllRings()
     return ringID
 end
@@ -80,18 +80,17 @@ function RingMenu_UpdateRing(ringID)
             local allowMultipleOpenRings = self:GetAttribute("allowMultipleOpenRings")
             local UIParent = self:GetFrameRef("UIParent")
             
-            if not allowMultipleOpenRings then
-                for ringID = 1, numRings do
-                    local rfOther = self:GetFrameRef("ringFrame" .. ringID)
-                    if rfOther then
-                        rfOther:Hide()
-                    end
-                end
-            end
-            
             if rf:IsShown() then
                 rf:Hide()
             else
+                 if not allowMultipleOpenRings then
+                    for ringID = 1, numRings do
+                        local rfOther = self:GetFrameRef("ringFrame" .. ringID)
+                        if rfOther then
+                            rfOther:Hide()
+                        end
+                    end
+                end
                 local relx, rely = UIParent:GetMousePosition()
                 local x = relx * UIParent:GetWidth()
                 local y = rely * UIParent:GetHeight()
@@ -168,16 +167,16 @@ RingMenu.mainFrame.OnEvent = function (self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == RingMenu_AddonName then
         -- Update empty fields in settings with default values
         RingMenu_globalConfig = RingMenu_globalConfig or {}
-        update_with_defaults(RingMenu_globalConfig, RingMenu_globalConfigDefault)
+        RingMenu.update_with_defaults(RingMenu_globalConfig, RingMenu_globalConfigDefault)
         for ringID = 1, RingMenu_globalConfig.numRings do
             RingMenu_ringConfig[ringID] = RingMenu_ringConfig[ringID] or {}
-            update_with_defaults(RingMenu_ringConfig[ringID], RingMenu_ringConfigDefault)
+            RingMenu.update_with_defaults(RingMenu_ringConfig[ringID], RingMenu_ringConfigDefault)
         end
         
         -- Init state
-        RingMenu.globalState = deep_copy(RingMenu_globalStateDefault)
+        RingMenu.globalState = RingMenu.deep_copy(RingMenu_globalStateDefault)
         for ringID = 1, RingMenu_globalConfig.numRings do
-            RingMenu.ringState[ringID] = deep_copy(RingMenu_ringStateDefault)
+            RingMenu.ringState[ringID] = RingMenu.deep_copy(RingMenu_ringStateDefault)
         end
         
         RingMenu_UpdateAllRings()
