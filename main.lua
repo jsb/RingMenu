@@ -8,6 +8,7 @@ local RingMenu_ringConfigDefault = {
     name = nil,
     keyBind = nil,
     radius = 120,
+    angle = 0,
     firstSlot = 13,
     numSlots = 12,
     backdropScale = 1.5,
@@ -110,7 +111,7 @@ function RingMenu_UpdateRing(ringID)
         end
         local button = rf.button[buttonID]
         
-        local angle = 2 * math.pi * (0.25 - (buttonID - 1) / config.numSlots)
+        local angle = 2 * math.pi * (0.25 - (buttonID - 1) / config.numSlots - config.angle / 360.0)
         local posX = config.radius * math.cos(angle)
         local posY = config.radius * math.sin(angle)
         button:SetPoint("CENTER", rf, "CENTER", posX, posY)

@@ -86,6 +86,12 @@ RingMenu.ringConfigWidgets = {
         min = 0, max = 300, labelSuffix = " px", valueStep = 1,
     },
     {
+        name = "angle",
+        label = "Angle",
+        widgetType = "slider",
+        min = 0, max = 360, labelSuffix = " °", valueStep = 1,
+    },
+    {
         name = "firstSlot",
         label = "First Button Slot",
         widgetType = "number",
