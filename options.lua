@@ -52,6 +52,7 @@ function RingMenuOptionsPanel_AddRing()
     local ringPanel = _G["RingMenuOptionsPanelRingConfig"]
     local ringID = RingMenu_AddRing()
     currentRingID = ringID
+    RingMenu_UpdateAllRings()
     ringPanel.refresh()
 end
 
@@ -65,6 +66,7 @@ function RingMenuOptionsPanel_RemoveRing()
     end
     
     restoreAllSavedKeyBinds()
+    RingMenu_UpdateAllRings()
     ringPanel.refresh()
 end
 

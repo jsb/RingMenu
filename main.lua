@@ -2,6 +2,7 @@ local RingMenu_AddonName, RingMenu = ...
 
 local RingMenu_globalConfigDefault = {
     numRings = 1,
+    allowMultipleOpenRings = false,
 }
 
 local RingMenu_ringConfigDefault = {
@@ -75,7 +76,19 @@ function RingMenu_UpdateRing(ringID)
         rf.toggleButton:SetFrameRef("UIParent", UIParent)
         rf.toggleButton:SetAttribute("_onmousedown", [[ -- (self, button)
             local rf = self:GetParent()
+            local numRings = self:GetAttribute("numRings")
+            local allowMultipleOpenRings = self:GetAttribute("allowMultipleOpenRings")
             local UIParent = self:GetFrameRef("UIParent")
+            
+            if not allowMultipleOpenRings then
+                for ringID = 1, numRings do
+                    local rfOther = self:GetFrameRef("ringFrame" .. ringID)
+                    if rfOther then
+                        rfOther:Hide()
+                    end
+                end
+            end
+            
             if rf:IsShown() then
                 rf:Hide()
             else
@@ -94,6 +107,7 @@ function RingMenu_UpdateRing(ringID)
     local frameSize = 2 * config.radius * config.backdropScale
     rf:SetSize(frameSize, frameSize)
     rf.backdrop:SetVertexColor(config.backdropColor.r, config.backdropColor.g, config.backdropColor.b, config.backdropColor.a)
+    rf.toggleButton:SetAttribute("allowMultipleOpenRings", RingMenu_globalConfig.allowMultipleOpenRings)
     
     -- Lazy-init this ringFrame's buttons
     rf.button = rf.button or {}
@@ -128,10 +142,24 @@ function RingMenu_UpdateRing(ringID)
     end
 end
 
+function RingMenu_UpdateRingCrossReferences()
+    for ringID = 1, RingMenu_globalConfig.numRings do
+        local rf = RingMenu.ringFrame[ringID]
+        for ringIDOther = 1, RingMenu_globalConfig.numRings do
+            local rfOther = RingMenu.ringFrame[ringIDOther]
+            if rfOther then
+                rf.toggleButton:SetFrameRef("RingFrame" .. ringIDOther, rfOther)
+            end
+        end
+        rf.toggleButton:SetAttribute("numRings", RingMenu_globalConfig.numRings)
+    end
+end
+
 function RingMenu_UpdateAllRings()
     for ringID = 1, RingMenu_globalConfig.numRings do
         RingMenu_UpdateRing(ringID)
     end
+    RingMenu_UpdateRingCrossReferences()
 end
 
 -- The main frame is used only to respond to global events
