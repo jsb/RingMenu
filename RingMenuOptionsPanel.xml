@@ -1,0 +1,110 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Frame name="RingMenuOptionsPanel" hidden="true">
+		<Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentTitle" text="RingMenu" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="16" y="-16"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentSubText" text="You can configure one or several RingMenus. Each RingMenu has an individual key binding and settings." inherits="GameFontHighlightSmall" nonspacewrap="true" justifyH="LEFT" justifyV="TOP">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="-8"/>
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="RIGHT">
+                            <Offset>
+                                <AbsDimension x="-32" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
+            </Layer>
+        </Layers>
+		<Frames>
+            <!-- This would be the place for global settings widgets that apply to all rings. -->
+            <Frame name="$parentRingDropDown" inherits="UIDropDownMenuTemplate" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentSubText" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="-15" y="-24"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Layers>
+                    <Layer level="BACKGROUND">
+                        <FontString name="$parentLabel" inherits="GameFontNormal" text="Configure Ring">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
+                                    <Offset>
+                                        <AbsDimension x="16" y="3"/>
+                                    </Offset>
+                                </Anchor>
+                            </Anchors>
+                        </FontString>
+                    </Layer>
+                </Layers>
+            </Frame>
+            <Button name="$parentAddRing" inherits="UIPanelButtonTemplate" text="+">
+                <Anchors>
+                    <Size x="15" y="17"/>
+                    <Anchor point="LEFT" relativeTo="$parentRingDropDown" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="-8" y="3"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        RingMenuOptionsPanel_AddRing()
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Button name="$parentRemoveRing" inherits="UIPanelButtonTemplate" text="–">
+                <Anchors>
+                    <Size x="15" y="17"/>
+                    <Anchor point="LEFT" relativeTo="$parentAddRing" relativePoint="RIGHT">
+                        <Offset>
+                            <AbsDimension x="4" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        RingMenuOptionsPanel_RemoveRing()
+                    </OnClick>
+                </Scripts>
+            </Button>
+            <Frame name="$parentRingConfig">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentRingDropDown" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="15" y="-2"/>
+                        </Offset>
+                    </Anchor>
+                     <Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+                        <Offset>
+                            <AbsDimension x="-15" y="15"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+                    <EdgeSize val="16"/>
+                    <TileSize val="16"/>
+                    <Color r="0.0" g="0.0" b="0.0" a="0.5" />
+                    <BackgroundInsets left="3" right="3" top="3" bottom="3"/>
+                </Backdrop>
+                <Frames>
+                    <!-- These widgets will be generated automatically on the LUA side. -->
+                </Frames>
+            </Frame>
+		</Frames>
+	</Frame>
+</Ui>

@@ -5,7 +5,9 @@ local RingMenu_globalConfigDefault = {
 }
 
 local RingMenu_ringConfigDefault = {
-    radius = 100,
+    name = nil,
+    keyBind = nil,
+    radius = 120,
     firstSlot = 13,
     numSlots = 12,
     backdropScale = 1.5,
@@ -23,6 +25,22 @@ RingMenu_globalConfig = {}
 RingMenu_ringConfig = {}
 RingMenu.globalState = {}
 RingMenu.ringState = {}
+
+function RingMenu_AddRing()
+    RingMenu_globalConfig.numRings = RingMenu_globalConfig.numRings + 1
+    local ringID = RingMenu_globalConfig.numRings
+    RingMenu_ringConfig[ringID] = shallow_copy(RingMenu_ringConfigDefault)
+    RingMenu.ringState = shallow_copy(RingMenu_ringStateDefault)
+    RingMenu_UpdateAllRings()
+    return ringID
+end
+
+function RingMenu_RemoveRing(ringID)
+    table.remove(RingMenu_ringConfig, ringID)
+    table.remove(RingMenu.ringState, ringID)
+    RingMenu_globalConfig.numRings = RingMenu_globalConfig.numRings - 1
+    RingMenu_UpdateAllRings()
+end
 
 function RingMenu_UpdateRing(ringID)
     -- Lazy-init of the ringFrame array
@@ -91,7 +109,9 @@ function RingMenu_UpdateRing(ringID)
         local posY = config.radius * math.sin(angle)
         button:SetPoint("CENTER", rf, "CENTER", posX, posY)
         button:SetAttribute("type", "action")
-        button:SetAttribute("action", config.firstSlot + buttonID - 1)
+        local firstSlot = config.firstSlot or 1
+        local buttonSlot = firstSlot + buttonID - 1
+        button:SetAttribute("action", buttonSlot)
     end
     -- Hide unused buttons
     for id, button in ipairs(rf.button) do
@@ -126,6 +146,9 @@ RingMenu.mainFrame.OnEvent = function (self, event, arg1)
         end
         
         RingMenu_UpdateAllRings()
+        
+        -- Init options panel
+        RingMenuOptions_SetupPanel()
     end
 end
 RingMenu.mainFrame:RegisterEvent("ADDON_LOADED")
