@@ -97,6 +97,11 @@ RingMenu.ringConfigWidgets = {
         widgetType = "slider",
         min = 1, max = 24, labelSuffix = "", valueStep = 1,
     },
+    {
+        name = "backdropColor",
+        label = "Backdrop Color",
+        widgetType = "color",
+    },
 }
 
 function RingMenuOptions_SetupPanel()
@@ -162,6 +167,9 @@ function RingMenuOptions_SetupPanel()
                 widgetFrame:ClearFocus()
             elseif widget.widgetType == "keyBind" then
                 widgetFrame:SetText(getRingBindingKeyBindsText(currentRingID))
+            elseif widget.widgetType == "color" then
+                local texture = widgetFrame.texture
+                texture:SetVertexColor(value.r, value.g, value.b, value.a)
             else
                 print("Unexpected widget type " .. widget.widgetType)
             end
@@ -239,6 +247,35 @@ function RingMenuOptions_SetupPanel()
         self:SetText(getRingBindingKeyBindsText(currentRingID))
     end
     
+    local function colorOnClick(self)
+        local widget = self.widget
+        local settingsTable = RingMenu_ringConfig[currentRingID]
+        local settingsField = widget.name
+        local color = settingsTable[settingsField]
+        
+        ColorPickerFrame:SetColorRGB(color.r, color.g, color.b)
+        ColorPickerFrame.hasOpacity = true
+        ColorPickerFrame.opacity = color.a
+        ColorPickerFrame.previousValues = {color.r, color.g, color.b, color.a}
+        local colorPickerCallback = function (restore)
+            local value = {}
+            if restore then
+                value.r, value.g, value.b, value.a = unpack(restore)
+            else
+                value.r, value.g, value.b = ColorPickerFrame:GetColorRGB()
+                value.a = OpacitySliderFrame:GetValue()
+            end
+            -- Color preview
+            widget.widgetFrame.texture:SetVertexColor(value.r, value.g, value.b, value.a)
+            widgetChanged(self.widget, value)
+        end
+        ColorPickerFrame.func = colorPickerCallback
+        ColorPickerFrame.opacityFunc = colorPickerCallback
+        ColorPickerFrame.cancelFunc = colorPickerCallback
+        ColorPickerFrame:Hide()
+        ColorPickerFrame:Show()
+    end
+    
     for _, widget in ipairs(RingMenu.ringConfigWidgets) do
         local label = ringPanel:CreateFontString(ringPanel:GetName() .. "Label" .. widget.name, "ARTWORK", "GameFontNormal")
         label:SetText(widget.label)
@@ -295,6 +332,23 @@ function RingMenuOptions_SetupPanel()
             keyBindHandler:SetOnBindingCompletedCallback(function (completedSuccessfully, keys)
                 keyBindOnBindingCompleted(widgetFrame, completedSuccessfully, keys)
             end)
+        elseif widget.widgetType == "color" then
+            widgetFrame = CreateFrame("Button", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel)
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
+            widgetFrame:SetSize(18, 18)
+            
+            local texture = widgetFrame:CreateTexture(nil, "BACKGROUND")
+            texture:SetPoint("CENTER", widgetFrame, "CENTER")
+            texture:SetSize(18, 18)
+            texture:SetColorTexture(0.8, 0.8, 0.8, 1.0)
+            
+            widgetFrame:SetNormalTexture("Interface/ChatFrame/ChatFrameColorSwatch")
+            local normalTexture = widgetFrame:GetNormalTexture()
+            normalTexture:SetPoint("TOPLEFT", widgetFrame, "TOPLEFT")
+            normalTexture:SetPoint("BOTTOMRIGHT", widgetFrame, "BOTTOMRIGHT")
+            
+            widgetFrame.texture = normalTexture
+            widgetFrame:SetScript("OnClick", colorOnClick)
         else
             print("RingMenu: Unrecognized widget type: " .. widget.widgetType)
         end

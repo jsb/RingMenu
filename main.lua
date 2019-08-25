@@ -11,6 +11,12 @@ local RingMenu_ringConfigDefault = {
     firstSlot = 13,
     numSlots = 12,
     backdropScale = 1.5,
+    backdropColor = {
+        r = 0.0,
+        g = 0.0,
+        b = 0.0,
+        a = 0.5,
+    },
 }
 
 local RingMenu_globalStateDefault = {
@@ -29,8 +35,8 @@ RingMenu.ringState = {}
 function RingMenu_AddRing()
     RingMenu_globalConfig.numRings = RingMenu_globalConfig.numRings + 1
     local ringID = RingMenu_globalConfig.numRings
-    RingMenu_ringConfig[ringID] = shallow_copy(RingMenu_ringConfigDefault)
-    RingMenu.ringState = shallow_copy(RingMenu_ringStateDefault)
+    RingMenu_ringConfig[ringID] = deep_copy(RingMenu_ringConfigDefault)
+    RingMenu.ringState = deep_copy(RingMenu_ringStateDefault)
     RingMenu_UpdateAllRings()
     return ringID
 end
@@ -59,7 +65,6 @@ function RingMenu_UpdateRing(ringID)
         rf.backdrop:SetPoint("BOTTOMLEFT", rf, "BOTTOMLEFT")
         rf.backdrop:SetPoint("TOPRIGHT", rf, "TOPRIGHT")
         rf.backdrop:SetTexture("Interface\\AddOns\\RingMenu\\RingMenuBackdrop.tga")
-        rf.backdrop:SetVertexColor(0, 0, 0, 0.5)
         
         -- An invisible button used as a secure handler for
         -- (a) responding to CLICK RingMenuToggleRing*:LeftButton binding events on a secure path
@@ -87,6 +92,7 @@ function RingMenu_UpdateRing(ringID)
     
     local frameSize = 2 * config.radius * config.backdropScale
     rf:SetSize(frameSize, frameSize)
+    rf.backdrop:SetVertexColor(config.backdropColor.r, config.backdropColor.g, config.backdropColor.b, config.backdropColor.a)
     
     -- Lazy-init this ringFrame's buttons
     rf.button = rf.button or {}
@@ -140,9 +146,9 @@ RingMenu.mainFrame.OnEvent = function (self, event, arg1)
         end
         
         -- Init state
-        RingMenu.globalState = shallow_copy(RingMenu_globalStateDefault)
+        RingMenu.globalState = deep_copy(RingMenu_globalStateDefault)
         for ringID = 1, RingMenu_globalConfig.numRings do
-            RingMenu.ringState[ringID] = shallow_copy(RingMenu_ringStateDefault)
+            RingMenu.ringState[ringID] = deep_copy(RingMenu_ringStateDefault)
         end
         
         RingMenu_UpdateAllRings()
