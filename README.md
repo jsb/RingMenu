@@ -16,4 +16,4 @@ You can now drag and drop actions to the slots of the RingMenu like for a regula
 
 Using the _First Button Slot_ and _Number of Buttons_ settings further down, you can adjust the range of action button slots that are used for the RingMenu. Depending on your class, some button slot ranges might be already in use for shapeshift forms. Use [this list](http://wowwiki.wikia.com/wiki/ActionSlot) to pick an appropriate range.
 
-Using the drop down menu at the top of the panel and the **+** and **-** buttons next to it, you can configure several RingMenus which can have different settings and key binds.
+Using the drop down menu at the top of the panel and the **+** and **-** buttons next to it, you can configure several RingMenus which can have different settings and key binds. To easily distinguish RingMenus, you can (optionally) give each one a name.
