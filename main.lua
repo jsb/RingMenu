@@ -8,6 +8,7 @@ local RingMenu_globalConfigDefault = {
 local RingMenu_ringConfigDefault = {
     name = nil,
     keyBind = nil,
+    closeOnClick = true,
     radius = 120,
     angle = 0,
     firstSlot = 13,
@@ -107,6 +108,7 @@ function RingMenu_UpdateRing(ringID)
     rf:SetSize(frameSize, frameSize)
     rf.backdrop:SetVertexColor(config.backdropColor.r, config.backdropColor.g, config.backdropColor.b, config.backdropColor.a)
     rf.toggleButton:SetAttribute("allowMultipleOpenRings", RingMenu_globalConfig.allowMultipleOpenRings)
+    rf:SetAttribute("closeOnClick", config.closeOnClick)
     
     -- Lazy-init this ringFrame's buttons
     rf.button = rf.button or {}
@@ -119,7 +121,10 @@ function RingMenu_UpdateRing(ringID)
             
             rf.toggleButton:WrapScript(button, "OnClick", [[ -- (self, button, down)
                 local rf = self:GetParent()
-                rf:Hide()
+                local closeOnClick = rf:GetAttribute("closeOnClick")
+                if closeOnClick then
+                    rf:Hide()
+                end
             ]])
         end
         local button = rf.button[buttonID]

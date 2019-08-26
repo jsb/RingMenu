@@ -80,18 +80,6 @@ RingMenu.ringConfigWidgets = {
         widgetType = "text",
     },
     {
-        name = "radius",
-        label = "Radius",
-        widgetType = "slider",
-        min = 0, max = 300, labelSuffix = " px", valueStep = 1,
-    },
-    {
-        name = "angle",
-        label = "Angle",
-        widgetType = "slider",
-        min = 0, max = 360, labelSuffix = " °", valueStep = 1,
-    },
-    {
         name = "firstSlot",
         label = "First Button Slot",
         widgetType = "number",
@@ -104,9 +92,26 @@ RingMenu.ringConfigWidgets = {
         min = 1, max = 24, labelSuffix = "", valueStep = 1,
     },
     {
+        name = "closeOnClick",
+        label = "Close on Click",
+        widgetType = "checkbox",
+    },
+    {
         name = "backdropColor",
         label = "Backdrop Color",
         widgetType = "color",
+    },
+    {
+        name = "radius",
+        label = "Radius",
+        widgetType = "slider",
+        min = 0, max = 300, labelSuffix = " px", valueStep = 1,
+    },
+    {
+        name = "angle",
+        label = "Angle",
+        widgetType = "slider",
+        min = 0, max = 360, labelSuffix = " °", valueStep = 1,
     },
 }
 
@@ -165,6 +170,8 @@ function RingMenuOptions_SetupPanel()
             local value = settingsTable[settingsField]
             if widget.widgetType == "slider" then
                 widgetFrame:SetValue(value)
+            elseif widget.widgetType == "checkbox" then
+                widgetFrame:SetChecked(value)
             elseif widget.widgetType == "text" then
                 widgetFrame:SetText(value or "")
                 widgetFrame:SetCursorPosition(0) -- Fix to scroll the text field to the left
@@ -204,6 +211,12 @@ function RingMenuOptions_SetupPanel()
         if isUserInput then
             widgetChanged(widget, value)
         end
+    end
+    
+    local function checkboxOnClick(self)
+        local widget = self.widget
+        local value = (not not self:GetChecked())
+        widgetChanged(widget, value)
     end
     
     local function textOnValueChanged(self, isUserInput)
@@ -314,6 +327,11 @@ function RingMenuOptions_SetupPanel()
             _G[widgetFrame:GetName().."High"]:SetText(highLabel)
 
             widgetFrame:SetScript("OnValueChanged", sliderOnValueChanged)
+        elseif widget.widgetType == "checkbox" then
+            widgetFrame = CreateFrame("CheckButton", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "OptionsCheckButtonTemplate")
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
+            
+            widgetFrame:SetScript("OnClick", checkboxOnClick)
         elseif widget.widgetType == "text" then
             widgetFrame = CreateFrame("EditBox", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "InputBoxTemplate")
             widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
