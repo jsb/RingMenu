@@ -329,20 +329,20 @@ function RingMenuOptions_SetupPanel()
             widgetFrame:SetScript("OnValueChanged", sliderOnValueChanged)
         elseif widget.widgetType == "checkbox" then
             widgetFrame = CreateFrame("CheckButton", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "OptionsCheckButtonTemplate")
-            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding - 2, 0)
             
             widgetFrame:SetScript("OnClick", checkboxOnClick)
         elseif widget.widgetType == "text" then
             widgetFrame = CreateFrame("EditBox", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "InputBoxTemplate")
-            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
-            widgetFrame:SetWidth(widgetWidth)
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding + 6, 0)
+            widgetFrame:SetWidth(widgetWidth - 4)
             widgetFrame:SetHeight(20)
             widgetFrame:SetAutoFocus(false)
             
             widgetFrame:SetScript("OnTextChanged", textOnValueChanged)
         elseif widget.widgetType == "number" then
             widgetFrame = CreateFrame("EditBox", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "InputBoxTemplate")
-            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding + 6, 0)
             widgetFrame:SetWidth(40)
             widgetFrame:SetHeight(20)
             widgetFrame:SetAutoFocus(false)
@@ -352,15 +352,15 @@ function RingMenuOptions_SetupPanel()
             widgetFrame:SetScript("OnTextChanged", numberOnValueChanged)
         elseif widget.widgetType == "keyBind" then
             widgetFrame = CustomBindingManager:RegisterHandlerAndCreateButton(keyBindHandler, "CustomBindingButtonTemplateWithLabel", ringPanel)
-            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
-            widgetFrame:SetWidth(widgetWidth)
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding - 1, 0)
+            widgetFrame:SetWidth(widgetWidth + 4)
             
             keyBindHandler:SetOnBindingCompletedCallback(function (completedSuccessfully, keys)
                 keyBindOnBindingCompleted(widgetFrame, completedSuccessfully, keys)
             end)
         elseif widget.widgetType == "color" then
             widgetFrame = CreateFrame("Button", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel)
-            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding, 0)
+            widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding + 2, 0)
             widgetFrame:SetSize(18, 18)
             
             local texture = widgetFrame:CreateTexture(nil, "BACKGROUND")
