@@ -403,6 +403,11 @@ function RingMenuOptions_SetupPanel()
         end
     end
     
+    -- Display the current version in the title
+    local version = GetAddOnMetadata("RingMenu", "Version")
+    local titleLabel = _G["RingMenuOptionsPanelTitle"]
+    titleLabel:SetText("RingMenu |cFF888888v" .. version)
+    
     panel.name = "RingMenu"
     panel.refresh = function (self)
         ringPanel.refresh()

@@ -40,7 +40,7 @@
                 </Anchors>
                 <Layers>
                     <Layer level="BACKGROUND">
-                        <FontString name="$parentLabel" inherits="GameFontNormal" text="Configure Ring">
+                        <FontString name="$parentLabel" inherits="GameFontNormal" text="Configure RingMenu">
                             <Anchors>
                                 <Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
                                     <Offset>
