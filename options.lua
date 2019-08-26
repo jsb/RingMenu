@@ -44,9 +44,11 @@ local function restoreAllSavedKeyBinds()
             SetBinding(ringConfig.keyBind, getRingBindingCommand(ringID))
         end
     end
+    SaveBindings(GetCurrentBindingSet())
 end
 
 function RingMenuOptionsPanel_AddRing()
+    PlaySound(624) -- GAMEGENERICBUTTONPRESS
     local ringPanel = _G["RingMenuOptionsPanelRingConfig"]
     local ringID = RingMenu_AddRing()
     RingMenuOptionsPanel.currentRingID = ringID
@@ -55,6 +57,12 @@ function RingMenuOptionsPanel_AddRing()
 end
 
 function RingMenuOptionsPanel_RemoveRing()
+    PlaySound(624) -- GAMEGENERICBUTTONPRESS
+    if RingMenu_globalConfig.numRings <= 1 then
+        PlaySound(847) -- igQuestFailed
+        return
+    end
+
     local ringPanel = _G["RingMenuOptionsPanelRingConfig"]
     
     unbindAllRingBindingKeyBinds(RingMenuOptionsPanel.currentRingID)
@@ -335,7 +343,7 @@ function RingMenuOptions_SetupPanel()
         elseif widget.widgetType == "text" then
             widgetFrame = CreateFrame("EditBox", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "InputBoxTemplate")
             widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding + 6, 0)
-            widgetFrame:SetWidth(widgetWidth - 4)
+            widgetFrame:SetWidth(widgetWidth - 6)
             widgetFrame:SetHeight(20)
             widgetFrame:SetAutoFocus(false)
             
@@ -353,7 +361,7 @@ function RingMenuOptions_SetupPanel()
         elseif widget.widgetType == "keyBind" then
             widgetFrame = CustomBindingManager:RegisterHandlerAndCreateButton(keyBindHandler, "CustomBindingButtonTemplateWithLabel", ringPanel)
             widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding - 1, 0)
-            widgetFrame:SetWidth(widgetWidth + 4)
+            widgetFrame:SetWidth(widgetWidth + 2)
             
             keyBindHandler:SetOnBindingCompletedCallback(function (completedSuccessfully, keys)
                 keyBindOnBindingCompleted(widgetFrame, completedSuccessfully, keys)
