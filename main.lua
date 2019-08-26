@@ -192,3 +192,10 @@ RingMenu.mainFrame.OnEvent = function (self, event, arg1)
 end
 RingMenu.mainFrame:RegisterEvent("ADDON_LOADED")
 RingMenu.mainFrame:SetScript("OnEvent", RingMenu.mainFrame.OnEvent)
+
+SLASH_RINGMENU1 = '/ringmenu'
+function SlashCmdList.RINGMENU(msg, editBox)
+    -- Workaround: this function has to be called twice
+    InterfaceOptionsFrame_OpenToCategory("RingMenu")
+    InterfaceOptionsFrame_OpenToCategory("RingMenu")
+end
