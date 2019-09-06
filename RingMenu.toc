@@ -4,7 +4,9 @@
 ## Author: jsb
 ## Version: 2.1.1
 ## SavedVariablesPerCharacter: RingMenu_globalConfig, RingMenu_ringConfig
+## OptionalDeps: Masque
 copy.lua
 main.lua
 options.lua
 RingMenuOptionsPanel.xml
+libs/LibStub.toc

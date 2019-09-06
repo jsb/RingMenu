@@ -1,4 +1,5 @@
 local RingMenu_AddonName, RingMenu = ...
+local MSQ, MSQ_Version = LibStub("Masque", true)
 
 local RingMenu_globalConfigDefault = {
     numRings = 1,
@@ -115,6 +116,10 @@ function RingMenu_UpdateRing(ringID)
     for buttonID = 1, (config.numSlots or 1) do
         if not rf.button[buttonID] then
             rf.button[buttonID] = CreateFrame("CheckButton", "RingMenuRingFrame" .. ringID .. "Button" .. buttonID, rf, "ActionBarButtonTemplate")
+            if MSQ then
+                local masqueRing = MSQ:Group("RingMenu", "RingBar")
+                masqueRing:AddButton(rf.button[buttonID])
+            end
             local button = rf.button[buttonID]
             button.ringID = ringID
             button.buttonID = buttonID
