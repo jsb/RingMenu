@@ -9,4 +9,3 @@ copy.lua
 main.lua
 options.lua
 RingMenuOptionsPanel.xml
-libs/LibStub.toc
