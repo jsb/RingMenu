@@ -2,7 +2,7 @@
 ## Title: RingMenu
 ## Notes: Adds a circular action bar that can be summoned by a click of a (mouse) button.
 ## Author: jsb
-## Version: 2.2.0
+## Version: 2.2.1
 ## SavedVariablesPerCharacter: RingMenu_globalConfig, RingMenu_ringConfig
 ## OptionalDeps: Masque
 libs/LibStub.lua
