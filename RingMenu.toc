@@ -5,6 +5,7 @@
 ## Version: 2.2.0
 ## SavedVariablesPerCharacter: RingMenu_globalConfig, RingMenu_ringConfig
 ## OptionalDeps: Masque
+libs/LibStub.lua
 copy.lua
 main.lua
 options.lua
