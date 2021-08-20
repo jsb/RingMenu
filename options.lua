@@ -44,7 +44,7 @@ local function restoreAllSavedKeyBinds()
             SetBinding(ringConfig.keyBind, getRingBindingCommand(ringID))
         end
     end
-    AttemptToSaveBindings(GetCurrentBindingSet())
+    SaveBindings(GetCurrentBindingSet())
 end
 
 function RingMenuOptionsPanel_AddRing()
@@ -274,7 +274,7 @@ function RingMenuOptions_SetupPanel()
                 local keyBind = CreateKeyChordStringFromTable(keys)
                 local command = getRingBindingCommand(RingMenuOptionsPanel.currentRingID)
                 SetBinding(keyBind, command)
-                AttemptToSaveBindings(GetCurrentBindingSet())
+                SaveBindings(GetCurrentBindingSet())
                 
                 widgetChanged(self.widget, keyBind)
             end
