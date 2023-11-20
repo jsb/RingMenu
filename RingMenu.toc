@@ -3,6 +3,7 @@
 ## Author: jsb
 ## Version: 1.0.2
 ## SavedVariablesPerCharacter: RingMenu_settings
+
 RingMenuSettingsTemplates.xml
 RingMenuSettings.lua
 RingMenu.lua
