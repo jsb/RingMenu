@@ -45,7 +45,7 @@ RingMenu_targetY = -1.0
 RingMenu_isOpen = false
 
 -- Slash Commands
-SLASH_RINGMENU1 = "/ringmenu";
+SLASH_RINGMENU1 = "/ringmenu"
 
 function SlashCmdList.RINGMENU(message)
 	RingMenuSettingsFrame:Show()
@@ -86,6 +86,21 @@ function RingMenuFrame_OnLoad()
     RingMenu_ResetDefaultSettings()
     RingMenu_Close()
     this:RegisterEvent("VARIABLES_LOADED")
+	RingMenuFrame:SetFrameLevel(7)
+	
+	--Create background frame
+	local bg = CreateFrame("Frame", "RingMenuFrameBackground", RingMenuFrame)
+	bg:SetFrameStrata("MEDIUM")
+	bg:SetFrameLevel(7)
+	bg:SetWidth(300)
+	bg:SetHeight(300)
+	bg:SetPoint("CENTER", RingMenuFrame, "CENTER")
+	
+	--Create background texture
+	local tex = bg:CreateTexture("RingMenuShadow", "BACKGROUND")
+	tex:SetTexture("Interface\\AddOns\\RingMenu\\RingMenuBackdrop")
+	tex:SetPoint("BOTTOMLEFT", bg, "BOTTOMLEFT")
+	tex:SetPoint("TOPRIGHT", bg, "TOPRIGHT")
 end
 
 function RingMenuFrame_OnEvent(event)
@@ -128,7 +143,8 @@ function RingMenuFrame_ConfigureButtons()
         
         button:SetID(i)
         button:SetPoint("CENTER", RingMenuFrame, "CENTER", 0, 0)
-        button:SetFrameLevel(2)
+		button:SetFrameStrata("MEDIUM") --ADDED
+        button:SetFrameLevel(8) --CHANGED from 2
         button.isRingMenu = true
         button.isBonus = true
         button.buttonType = "RING_MENU"
@@ -165,7 +181,7 @@ function RingMenuFrame_OnUpdate(elapsed)
         else
             animationSpeed = RingMenu_settings.animationSpeedClose
         end
-        local alpha = math.pow(0.001, elapsed * animationSpeed)
+        local alpha = math.pow(0.001, elapsed * animationSpeed * 0.6)
 
         RingMenu_currentSize = RingMenu_Lerp(RingMenu_targetSize, RingMenu_currentSize, alpha)
         RingMenu_currentX = RingMenu_Lerp(RingMenu_targetX, RingMenu_currentX, alpha)
@@ -197,20 +213,22 @@ function RingMenu_UpdateButtonPositions()
         local buttonX = radius * math.sin(angle)
         local buttonY = radius * math.cos(angle)
         button:SetPoint("CENTER", RingMenuFrame, "CENTER", buttonX, buttonY)
+		button:SetScale(RingMenu_currentSize)
         button:SetAlpha(RingMenu_currentSize)
     end
 
     -- Background shadow
     local backdropAlpha = RingMenu_currentSize * RingMenu_settings.colorAlpha
-    RingMenuTextureShadow:SetVertexColor(RingMenu_settings.colorR, RingMenu_settings.colorG, RingMenu_settings.colorB, backdropAlpha);
+    RingMenuShadow:SetVertexColor(RingMenu_settings.colorR, RingMenu_settings.colorG, RingMenu_settings.colorB, backdropAlpha)
 
     -- Ring size
-    local size = RingMenu_currentSize * 2 * RingMenu_settings.radius * RingMenu_settings.backdropScale
-    RingMenuFrame:SetWidth(size)
-    RingMenuFrame:SetHeight(size)
+    local size = radius * 2 * RingMenu_settings.backdropScale * RingMenu_currentSize
+    RingMenuFrameBackground:SetWidth(size)
+    RingMenuFrameBackground:SetHeight(size)
 
     -- Ring position
-    RingMenuFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", RingMenu_currentX, RingMenu_currentY)
+    --RingMenuFrame:SetPoint("CENTER", "UIParent", "BOTTOMLEFT", RingMenu_currentX, RingMenu_currentY)
+    RingMenuFrame:SetPoint("CENTER", "UIParent", "CENTER", 0, 0) --CHANGED
 end
 
 function RingMenu_Toggle()
@@ -238,15 +256,17 @@ function RingMenu_Close()
 end
 
 function RingMenu_Open()
-    local mouseX, mouseY = RingMenu_GetMousePosition()
+    local mouseX, mouseY =  RingMenu_GetMousePosition()
     
     RingMenu_targetSize = 1.0
     RingMenu_targetX = mouseX
     RingMenu_targetY = mouseY
+	
     if RingMenu_currentSize == 0.0 then
         RingMenu_currentX = RingMenu_targetX
         RingMenu_currentY = RingMenu_targetY
     end
+	
     RingMenu_isOpen = true
     RingMenuFrame:Show()
 end
