@@ -10,7 +10,6 @@ local RingMenu_ringConfigDefault = {
     name = nil,
     keyBind = nil,
     closeOnClick = true,
-    level = 1,
     radius = 100,
     angle = 0,
     firstSlot = 13,
@@ -107,7 +106,6 @@ function RingMenu_UpdateRing(ringID)
     local rf = RingMenu.ringFrame[ringID]
     
     local frameSize = 2 * config.radius * config.backdropScale
-    rf:SetFrameLevel(config.level)
     rf:SetSize(frameSize, frameSize)
     rf.backdrop:SetVertexColor(config.backdropColor.r, config.backdropColor.g, config.backdropColor.b, config.backdropColor.a)
     rf.toggleButton:SetAttribute("allowMultipleOpenRings", RingMenu_globalConfig.allowMultipleOpenRings)
@@ -203,6 +201,5 @@ RingMenu.mainFrame:SetScript("OnEvent", RingMenu.mainFrame.OnEvent)
 SLASH_RINGMENU1 = '/ringmenu'
 function SlashCmdList.RINGMENU(msg, editBox)
     -- Workaround: this function has to be called twice
-    InterfaceOptionsFrame_OpenToCategory("RingMenu")
-    InterfaceOptionsFrame_OpenToCategory("RingMenu")
+    Settings.OpenToCategory("RingMenu")
 end
