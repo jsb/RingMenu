@@ -415,7 +415,7 @@ function RingMenuOptions_SetupPanel()
     -- panel.okay
     -- panel.cancel
     -- panel.default
-    category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name, panel.name);
+    category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name, panel.name)
     category.ID = panel.name
-    Settings.RegisterAddOnCategory(category);
+    Settings.RegisterAddOnCategory(category)
 end
