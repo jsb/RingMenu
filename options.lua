@@ -342,7 +342,7 @@ function RingMenuOptions_SetupPanel()
 
             widgetFrame:SetScript("OnValueChanged", sliderOnValueChanged)
         elseif widget.widgetType == "checkbox" then
-            widgetFrame = CreateFrame("CheckButton", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "OptionsCheckButtonTemplate")
+            widgetFrame = CreateFrame("CheckButton", ringPanel:GetName() .. "Widget" .. widget.name, ringPanel, "UICheckButtonTemplate")
             widgetFrame:SetPoint("LEFT", label, "RIGHT", columnPadding - 2, 0)
             
             widgetFrame:SetScript("OnClick", checkboxOnClick)
@@ -421,5 +421,7 @@ function RingMenuOptions_SetupPanel()
     -- panel.okay
     -- panel.cancel
     -- panel.default
-    InterfaceOptions_AddCategory(panel)
+    category, layout = Settings.RegisterCanvasLayoutCategory(panel, panel.name, panel.name)
+    category.ID = panel.name
+    Settings.RegisterAddOnCategory(category)
 end
