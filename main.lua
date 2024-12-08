@@ -202,6 +202,5 @@ RingMenu.mainFrame:SetScript("OnEvent", RingMenu.mainFrame.OnEvent)
 
 SLASH_RINGMENU1 = '/ringmenu'
 function SlashCmdList.RINGMENU(msg, editBox)
-    -- Workaround: this function has to be called twice
     Settings.OpenToCategory("RingMenu")
 end
