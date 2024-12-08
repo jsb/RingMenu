@@ -105,6 +105,12 @@ RingMenu.ringConfigWidgets = {
         widgetType = "checkbox",
     },
     {
+        name = "level",
+        label = "Level",
+        widgetType = "slider",
+        min = 1, max = 100, valueStep = 1,
+    },
+    {
         name = "backdropColor",
         label = "Backdrop Color",
         widgetType = "color",
